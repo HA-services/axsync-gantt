@@ -1,0 +1,6 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_axs_gantt_link_user,axs.gantt.link user,model_axs_gantt_link,base.group_user,1,1,1,1
+access_axs_gantt_binding_user,axs.gantt.binding user,model_axs_gantt_binding,base.group_user,1,0,0,0
+access_axs_gantt_binding_admin,axs.gantt.binding admin,model_axs_gantt_binding,base.group_system,1,1,1,1
+access_axs_gantt_config_admin,axs.gantt.config admin,model_axs_gantt_config,base.group_system,1,1,1,1
+access_axs_gantt_import_user,axs.gantt.import user,model_axs_gantt_import,base.group_user,1,1,1,1
