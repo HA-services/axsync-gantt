@@ -1,0 +1,6 @@
+id,name,model_id,group_id/id,operation,domain
+access_axs_gantt_link_user,axs.gantt.link user,axs.gantt.link,base.group_user,crud,
+access_axs_gantt_binding_user,axs.gantt.binding user,axs.gantt.binding,base.group_user,r,
+access_axs_gantt_binding_admin,axs.gantt.binding admin,axs.gantt.binding,base.group_system,crud,
+access_axs_gantt_config_admin,axs.gantt.config admin,axs.gantt.config,base.group_system,crud,
+access_axs_gantt_import_user,axs.gantt.import user,axs.gantt.import,base.group_user,crud,

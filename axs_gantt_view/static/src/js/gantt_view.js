@@ -1,0 +1,68 @@
+/* AXSync Gantt View - view registration and controller (Odoo 20, Owl 3). */
+
+import { registry } from "@web/core/registry";
+import { useService } from "@web/core/utils/hooks";
+import { Layout } from "@web/search/layout";
+import { SearchBar } from "@web/search/search_bar/search_bar";
+import { useSearchBarToggler } from "@web/search/search_bar/search_bar_toggler";
+import { CogMenu } from "@web/search/cog_menu/cog_menu";
+import { standardViewProps } from "@web/views/standard_view_props";
+import { Component, onMounted, onWillUnmount, onWillUpdateProps, signal, t, useProps } from "@odoo/owl";
+import { GanttEngine, setIconSet } from "./gantt_engine";
+import { parseGanttArch } from "./gantt_arch";
+
+// Odoo 20 ships Material Symbols instead of Font Awesome
+setIconSet("ms");
+
+export class AxsGanttController extends Component {
+    static template = "axs_gantt_view.GanttController";
+    static components = { Layout, SearchBar, CogMenu };
+    props = useProps({ ...standardViewProps, archInfo: t.object() });
+    engineRef = signal.ref();
+
+    setup() {
+        this.services = {
+            orm: useService("orm"),
+            action: useService("action"),
+            notification: useService("notification"),
+        };
+        this.searchBarToggler = useSearchBarToggler();
+        onMounted(() => {
+            const config = this.env.config || {};
+            const title = typeof config.getDisplayName === "function" ? config.getDisplayName() : config.displayName;
+            this.engine = new GanttEngine(this.engineRef(), {
+                services: this.services,
+                resModel: this.props.resModel,
+                archInfo: { ...this.props.archInfo, viewId: this.props.archInfo.viewId || config.actionId || "default" },
+                context: this.props.context,
+                domain: this.props.domain,
+                title: title || this.props.archInfo.string,
+            });
+            this.reload(this.props);
+        });
+        onWillUpdateProps((nextProps) => {
+            if (this.engine) {
+                this.reload(nextProps);
+            }
+        });
+        onWillUnmount(() => this.engine && this.engine.destroy());
+    }
+
+    reload(props) {
+        return this.engine
+            .load({ domain: props.domain, context: props.context, groupBy: props.groupBy || [] })
+            .catch((error) => this.engine._error(error));
+    }
+}
+
+export const axsGanttView = {
+    type: "axs_gantt",
+    searchMenuTypes: ["filter", "groupBy", "favorite"],
+    Controller: AxsGanttController,
+    props: (genericProps) => ({
+        ...genericProps,
+        archInfo: parseGanttArch(genericProps.arch),
+    }),
+};
+
+registry.category("views").add("axs_gantt", axsGanttView);
