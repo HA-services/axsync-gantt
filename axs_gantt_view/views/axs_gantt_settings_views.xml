@@ -1,0 +1,191 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="axs_gantt_settings_view_form" model="ir.ui.view">
+        <field name="name">axs.gantt.settings.form</field>
+        <field name="model">res.config.settings</field>
+        <field name="priority">90</field>
+        <field name="arch" type="xml">
+            <form string="Gantt Settings" class="o_axs_gantt_settings">
+                <header>
+                    <button string="Save" type="object" name="execute" class="oe_highlight"/>
+                    <button string="Discard" type="object" name="cancel" special="cancel"/>
+                </header>
+                <sheet>
+                    <div class="oe_title">
+                        <h1>Gantt View Settings</h1>
+                        <p class="text-muted">These options apply to every Gantt view of the database.</p>
+                    </div>
+                    <group>
+                        <group string="Tooltip" name="tooltip">
+                            <field name="axs_gantt_tooltip_start"/>
+                            <field name="axs_gantt_tooltip_stop"/>
+                            <field name="axs_gantt_tooltip_duration"/>
+                            <field name="axs_gantt_tooltip_progress"/>
+                            <field name="axs_gantt_tooltip_deadline"/>
+                            <field name="axs_gantt_tooltip_constraint"/>
+                            <field name="axs_gantt_tooltip_resource"/>
+                            <field name="axs_gantt_tooltip_fields"/>
+                        </group>
+                        <group string="Chart" name="chart">
+                            <field name="axs_gantt_dynamic_text" help="Show the label next to the bar when it does not fit inside."/>
+                            <field name="axs_gantt_dynamic_progress" help="Show the progress percentage on the bars."/>
+                            <field name="axs_gantt_days_off" help="Shade weekends, non-working days and public holidays of the company working schedule."/>
+                            <field name="axs_gantt_quick_info" help="Show a quick info card with actions when you click a bar."/>
+                            <field name="axs_gantt_stage_color" help="Color the bars by stage (or the color field of the view)."/>
+                            <field name="axs_gantt_default_scale"/>
+                            <field name="axs_gantt_max_records" help="Maximum number of records loaded in a Gantt view."/>
+                        </group>
+                    </group>
+                    <group>
+                        <group string="Hide Days Off" name="hide_days">
+                            <field name="axs_gantt_hide_days_off" help="Remove the selected days and public holidays from the Hours, Days and Weeks scales."/>
+                            <field name="axs_gantt_mon" invisible="not axs_gantt_hide_days_off"/>
+                            <field name="axs_gantt_tue" invisible="not axs_gantt_hide_days_off"/>
+                            <field name="axs_gantt_wed" invisible="not axs_gantt_hide_days_off"/>
+                            <field name="axs_gantt_thu" invisible="not axs_gantt_hide_days_off"/>
+                            <field name="axs_gantt_fri" invisible="not axs_gantt_hide_days_off"/>
+                            <field name="axs_gantt_sat" invisible="not axs_gantt_hide_days_off"/>
+                            <field name="axs_gantt_sun" invisible="not axs_gantt_hide_days_off"/>
+                        </group>
+                        <group string="Progress Notification" name="notify">
+                            <field name="axs_gantt_notify_user_ids" widget="many2many_tags"
+                                   help="Users notified by email when a record with 'Send Email at 90%' reaches 90% progress."/>
+                        </group>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_axs_gantt_settings" model="ir.actions.act_window">
+        <field name="name">Gantt Settings</field>
+        <field name="path">gantt-settings</field>
+        <field name="res_model">res.config.settings</field>
+        <field name="view_mode">form</field>
+        <field name="view_id" ref="axs_gantt_settings_view_form"/>
+        <field name="target">current</field>
+    </record>
+
+    <!-- no-code setup -->
+    <record id="axs_gantt_config_view_list" model="ir.ui.view">
+        <field name="name">axs.gantt.config.list</field>
+        <field name="model">axs.gantt.config</field>
+        <field name="arch" type="xml">
+            <list string="Gantt Setup">
+                <field name="name"/>
+                <field name="action_id"/>
+                <field name="model_name"/>
+                <field name="date_start_field_id"/>
+                <field name="date_stop_field_id"/>
+                <field name="default_scale"/>
+                <field name="active" widget="boolean_toggle"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="axs_gantt_config_view_form" model="ir.ui.view">
+        <field name="name">axs.gantt.config.form</field>
+        <field name="model">axs.gantt.config</field>
+        <field name="arch" type="xml">
+            <form string="Gantt Setup">
+                <header>
+                    <button name="action_open" type="object" string="Open Gantt" class="oe_highlight" invisible="not view_id"/>
+                </header>
+                <sheet>
+                    <widget name="web_ribbon" title="Archived" bg_color="text-bg-danger" invisible="active"/>
+                    <div class="oe_title">
+                        <label for="name"/>
+                        <h1><field name="name" placeholder="e.g. Sales Orders Planning"/></h1>
+                    </div>
+                    <group>
+                        <group string="Where">
+                            <field name="action_id" options="{'no_create': True}"/>
+                            <field name="model_name"/>
+                            <field name="model_id" invisible="1"/>
+                            <field name="active" invisible="1"/>
+                            <field name="default_scale"/>
+                            <field name="auto_schedule"/>
+                        </group>
+                        <group string="Timeline">
+                            <field name="date_start_field_id" options="{'no_create': True}" readonly="not action_id"/>
+                            <field name="date_stop_field_id" options="{'no_create': True}" readonly="not action_id"/>
+                            <field name="progress_field_id" options="{'no_create': True}" readonly="not action_id"/>
+                            <field name="deadline_field_id" options="{'no_create': True}" readonly="not action_id"/>
+                        </group>
+                        <group string="Structure">
+                            <field name="parent_field_id" options="{'no_create': True}" readonly="not action_id"/>
+                            <field name="dependency_field_id" options="{'no_create': True}" readonly="not action_id"/>
+                            <field name="group_by_field_id" options="{'no_create': True}" readonly="not action_id"/>
+                        </group>
+                        <group string="Display">
+                            <field name="color_field_id" options="{'no_create': True}" readonly="not action_id"/>
+                            <field name="resource_field_id" options="{'no_create': True}" readonly="not action_id"/>
+                        </group>
+                    </group>
+                    <group string="Extra columns and tooltip fields">
+                        <field name="column_field_ids" widget="many2many_tags" options="{'no_create': True}" nolabel="1" colspan="2" readonly="not action_id"/>
+                    </group>
+                    <group invisible="not view_id">
+                        <field name="view_id" readonly="1"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="axs_gantt_config_view_search" model="ir.ui.view">
+        <field name="name">axs.gantt.config.search</field>
+        <field name="model">axs.gantt.config</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="model_name"/>
+                <filter name="archived" string="Archived" domain="[('active', '=', False)]"/>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_axs_gantt_config" model="ir.actions.act_window">
+        <field name="name">Gantt Setup</field>
+        <field name="path">gantt-setup</field>
+        <field name="res_model">axs.gantt.config</field>
+        <field name="view_mode">list,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">Add a Gantt view to any menu</p>
+            <p>Pick a menu action, choose its start and end date fields, and a Gantt view is added to that menu. No code needed.</p>
+        </field>
+    </record>
+
+    <record id="axs_gantt_import_view_form" model="ir.ui.view">
+        <field name="name">axs.gantt.import.form</field>
+        <field name="model">axs.gantt.import</field>
+        <field name="arch" type="xml">
+            <form string="Import Tasks">
+                <p class="text-muted">
+                    Upload an Excel (.xlsx) file with the columns <b>Name</b> and <b>Start</b>
+                    (optional: ID, End, Progress, Parent ID, Predecessors, Milestone), or a JSON file exported
+                    from this Gantt view. Parents and dependencies are matched on the ID column.
+                </p>
+                <group>
+                    <field name="file" filename="filename"/>
+                    <field name="filename" invisible="1"/>
+                    <field name="update_existing"/>
+                    <field name="res_model" invisible="1"/>
+                    <field name="params_json" invisible="1"/>
+                    <field name="context_json" invisible="1"/>
+                </group>
+                <footer>
+                    <button name="action_import" string="Import" type="object" class="btn-primary"/>
+                    <button string="Cancel" class="btn-secondary" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <menuitem id="menu_axs_gantt_root" name="Gantt" parent="base.menu_administration" sequence="40"
+              groups="base.group_system"/>
+    <menuitem id="menu_axs_gantt_settings" name="Gantt Settings" parent="menu_axs_gantt_root"
+              action="action_axs_gantt_settings" sequence="10"/>
+    <menuitem id="menu_axs_gantt_config" name="Gantt Setup" parent="menu_axs_gantt_root"
+              action="action_axs_gantt_config" sequence="20"/>
+</odoo>
