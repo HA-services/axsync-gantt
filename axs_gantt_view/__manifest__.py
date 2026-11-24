@@ -1,0 +1,35 @@
+{
+    'name': 'Gantt View Pro | Project, Manufacturing, Time Off and Any Model',
+    'summary': 'Interactive Gantt chart for Odoo: drag and drop planning, dependencies, critical path, '
+               'resource load, baselines of progress, export to Excel, PDF, PNG, MS Project, Primavera and iCal.',
+    'description': 'AXSync Gantt View: a complete Gantt planning view usable on any Odoo model.',
+    'version': '16.0.1.0.0',
+    'category': 'Productivity',
+    'author': 'AXSync',
+    'website': 'https://axsync.com',
+    'support': 'hunain@axsync.com',
+    'license': 'OPL-1',
+    'price': 110.0,
+    'currency': 'USD',
+    'depends': ['web', 'mail', 'resource'],
+    'data': [
+        'security/ir.model.access.csv',
+        'data/axs_gantt_data.xml',
+        'views/axs_gantt_settings_views.xml',
+    ],
+    'assets': {
+        'web.assets_backend': [
+            'axs_gantt_view/static/src/js/gantt_utils.js',
+            'axs_gantt_view/static/src/js/gantt_exports.js',
+            'axs_gantt_view/static/src/js/gantt_arch.js',
+            'axs_gantt_view/static/src/js/gantt_engine.js',
+            'axs_gantt_view/static/src/js/gantt_view.js',
+            'axs_gantt_view/static/src/xml/gantt_view.xml',
+            'axs_gantt_view/static/src/scss/gantt.scss',
+        ],
+    },
+    'images': ['static/description/banner.png'],
+    'uninstall_hook': 'uninstall_hook',
+    'installable': True,
+    'application': False,
+}
